@@ -38,13 +38,14 @@ const uploadToImgBB = async (file) => {
     formData.append('key', IMGBB_API_KEY);
 
     
-    const response = await fetch('https:
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: formData.toString()
-    });
+const response = await fetch('https://api.imgbb.com/1/upload', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body: formData.toString(),
+});
+
 
     if (!response.ok) {
       const errorText = await response.text();
