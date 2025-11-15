@@ -92,7 +92,7 @@ export function useAuth() {
   };
 
   const refreshUser = async () => {
-    await checkAuth();
+      await checkAuth();
   };
 
   return { user, loading, logout, refreshUser, isAuthenticated: !!user };

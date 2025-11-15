@@ -105,8 +105,8 @@ export default function Register() {
             router.push('/dashboard');
           }
         } catch (error) {
-          toast.success('Google sign-up successful!');
-          router.push('/dashboard');
+        toast.success('Google sign-up successful!');
+        router.push('/dashboard');
         }
       }
     } catch (error) {

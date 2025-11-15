@@ -83,8 +83,8 @@ export default function Login() {
             router.push('/dashboard');
           }
         } catch (error) {
-          toast.success('Google sign-in successful!');
-          router.push('/dashboard');
+        toast.success('Google sign-in successful!');
+        router.push('/dashboard');
         }
       }
     } catch (error) {

@@ -8,10 +8,7 @@ import { verifyToken } from '@/lib/auth';
 export async function GET(request) {
   try {
     await connectDB();
-
-    // Try NextAuth session first (for Google OAuth users)
     const session = await getServerSession(authOptions);
-    
     if (session?.user) {
       const user = await User.findOne({ email: session.user.email });
       if (!user) {
@@ -101,24 +98,24 @@ export async function PUT(request) {
     await connectDB();
 
     // Get JWT token from Authorization header
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Not authenticated' },
-        { status: 401 }
-      );
-    }
+      const authHeader = request.headers.get('authorization');
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return NextResponse.json(
+          { error: 'Not authenticated' },
+          { status: 401 }
+        );
+      }
 
-    const token = authHeader.substring(7);
-    const currentUser = verifyToken(token);
-    
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      );
-    }
-    
+      const token = authHeader.substring(7);
+      const currentUser = verifyToken(token);
+      
+      if (!currentUser) {
+        return NextResponse.json(
+          { error: 'Invalid token' },
+          { status: 401 }
+        );
+      }
+      
     const currentUserId = currentUser.userId;
 
     const body = await request.json();

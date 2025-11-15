@@ -14,7 +14,7 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      allowDangerousEmailAccountLinking: true, // Allow linking accounts with same email
+      allowDangerousEmailAccountLinking: true, 
     })
   ],
   callbacks: {
@@ -42,8 +42,7 @@ export const authOptions = {
               email: user.email,
               profilePicture: user.image,
               isGoogleUser: true,
-              location: '', // Set empty location for Google users
-              // Set a random password for Google users (they won't use it)
+              location: '',
               password: Math.random().toString(36).slice(-8)
             })
             
