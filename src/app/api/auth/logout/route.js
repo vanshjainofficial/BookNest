@@ -6,7 +6,6 @@ export async function POST() {
       message: 'Logout successful'
     });
 
-    // Remove auth cookie
     response.cookies.delete('auth-token');
 
     return response;

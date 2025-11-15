@@ -16,13 +16,13 @@ export default function MyBooks() {
   const [editingBook, setEditingBook] = useState(null);
   const [editFormData, setEditFormData] = useState({});
 
-  // Call refreshUser on component mount and fetch books
+  
   useEffect(() => {
     const initializeData = async () => {
       console.log('=== Initializing data ===');
       console.log('Testing API call...');
       
-      // Test API call with authentication
+      
       try {
         const token = localStorage.getItem('token');
         console.log('Test token:', token ? 'Found' : 'Not found');
@@ -44,7 +44,7 @@ export default function MyBooks() {
       }
       
       await refreshUser();
-      // Wait a bit for user data to load
+      
       setTimeout(() => {
         console.log('User after timeout:', user);
         if (user) {
@@ -55,16 +55,16 @@ export default function MyBooks() {
     initializeData();
   }, []);
 
-  // Auto-refresh books every 30 seconds (disabled for now to prevent multiple calls)
-  // useEffect(() => {
-  //   if (user) {
-  //     const interval = setInterval(() => {
-  //       fetchBooks();
-  //     }, 30000);
+  
+  
+  
+  
+  
+  
 
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [user]);
+  
+  
+  
 
   useEffect(() => {
     if (user) {
@@ -79,7 +79,7 @@ export default function MyBooks() {
     }
   }, [user]);
 
-  // Also fetch books when session changes
+  
   useEffect(() => {
     if (session?.user && user?.isGoogleUser) {
       console.log('Session changed, fetching books:', session.user);
@@ -101,7 +101,7 @@ export default function MyBooks() {
         return;
       }
 
-      // For NextAuth users, fetch from API to get fresh data
+      
       if (user.isGoogleUser) {
         console.log('NextAuth user - fetching books from API');
         try {
@@ -113,7 +113,7 @@ export default function MyBooks() {
             console.log('NextAuth API data:', data);
             setBooks(data.books || []);
           } else {
-            // Fallback to session data
+            
             console.log('API failed, using session data');
             const ownedBooks = (user.books || []).filter(book => {
               console.log('Checking book:', book.title, 'ownerId:', book.ownerId, 'user.id:', user.id);
@@ -124,7 +124,7 @@ export default function MyBooks() {
           }
         } catch (apiError) {
           console.error('NextAuth API error:', apiError);
-          // Fallback to session data
+          
           const ownedBooks = (user.books || []).filter(book => {
             console.log('Checking book:', book.title, 'ownerId:', book.ownerId, 'user.id:', user.id);
             return book.ownerId === user.id;
@@ -136,7 +136,7 @@ export default function MyBooks() {
         return;
       }
 
-      // For JWT users
+      
       const token = localStorage.getItem('token');
       console.log('JWT token:', token ? 'Found' : 'Not found');
       if (!token) {
@@ -207,7 +207,7 @@ export default function MyBooks() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         response = await fetch(`/api/books/${editingBook._id}`, {
           method: 'PUT',
           headers: {
@@ -219,7 +219,7 @@ export default function MyBooks() {
           })
         });
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         if (!token) {
           toast.error('Please login to edit book');
@@ -263,13 +263,13 @@ export default function MyBooks() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         console.log('Deleting book (NextAuth):', bookId);
         response = await fetch(`/api/books/${bookId}`, {
           method: 'DELETE'
         });
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         if (!token) {
           toast.error('Please login to delete book');
@@ -296,10 +296,10 @@ export default function MyBooks() {
       console.log('Delete success:', data);
       toast.success('Book deleted successfully!');
       
-      // Remove book from local state immediately
+      
       setBooks(books.filter(book => book._id !== bookId));
       
-      // Also refresh from server
+      
       fetchBooks();
     } catch (error) {
       console.error('Error deleting book:', error);

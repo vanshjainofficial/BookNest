@@ -15,13 +15,13 @@ export default function Dashboard() {
       fetchBooks();
       fetchExchanges();
     } else {
-      // Clear data when user logs out
+      
       setBooks([]);
       setExchanges([]);
     }
   }, [user?.id, user?.isGoogleUser]);
 
-  // Refresh user data when component mounts
+  
   useEffect(() => {
     refreshUser();
   }, []);
@@ -32,7 +32,7 @@ export default function Dashboard() {
         limit: '6'
       });
 
-      // Exclude user's own books
+      
       if (user?.id) {
         params.append('excludeOwner', user.id);
       }
@@ -49,7 +49,7 @@ export default function Dashboard() {
 
   const fetchExchanges = async () => {
     try {
-      // For NextAuth users, fetch from API to get fresh data
+      
       if (user?.isGoogleUser) {
         const response = await fetch('/api/exchanges?limit=5');
         
@@ -57,14 +57,14 @@ export default function Dashboard() {
           const data = await response.json();
           setExchanges(data.exchanges);
         } else {
-          // Fallback to session data
+          
           const userExchanges = user.exchanges || [];
           setExchanges(userExchanges.slice(0, 5));
         }
         return;
       }
 
-      // For JWT users, use token
+      
       const token = localStorage.getItem('token');
       if (!token) return;
 

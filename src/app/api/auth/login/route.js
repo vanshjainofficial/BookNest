@@ -9,7 +9,6 @@ export async function POST(request) {
     
     const { email, password } = await request.json();
 
-    // Validation
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Email and password are required' },
@@ -17,7 +16,6 @@ export async function POST(request) {
       );
     }
 
-    // Find user by email
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return NextResponse.json(
@@ -26,7 +24,6 @@ export async function POST(request) {
       );
     }
 
-    // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return NextResponse.json(
@@ -35,18 +32,15 @@ export async function POST(request) {
       );
     }
 
-    // Update last active
     user.lastActive = new Date();
     await user.save();
 
-    // Generate JWT token
     const token = generateToken({
       userId: user._id,
       email: user.email,
       name: user.name
     });
 
-    // Return response with token
     return NextResponse.json({
       message: 'Login successful',
       token: token,

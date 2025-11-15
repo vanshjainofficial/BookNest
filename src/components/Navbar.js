@@ -10,12 +10,12 @@ export default function Navbar() {
   const { data: session } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Show navbar if user is authenticated via either method
+  
   if (!user && !session) {
     return null;
   }
 
-  // Use NextAuth session user if available, otherwise use JWT user
+  
   const currentUser = session?.user || user;
 
   const toggleMobileMenu = () => {

@@ -15,7 +15,7 @@ export function useAuth() {
 
   const checkAuth = async () => {
     try {
-      // Check NextAuth session first (for Google OAuth users)
+      
       if (session?.user) {
         try {
           const response = await fetch('/api/auth/me', {
@@ -26,7 +26,7 @@ export function useAuth() {
             const data = await response.json();
             setUser(data.user);
           } else {
-            // Fallback to session data
+            
             setUser({
               ...session.user,
               isGoogleUser: true,
@@ -36,7 +36,7 @@ export function useAuth() {
             });
           }
         } catch (error) {
-          // Fallback to session data
+          
           setUser({
             ...session.user,
             isGoogleUser: true,
@@ -49,7 +49,7 @@ export function useAuth() {
         return;
       }
 
-      // Fallback to JWT token (for regular email/password users)
+      
       const token = getToken();
       if (!token) {
         setLoading(false);
@@ -82,10 +82,10 @@ export function useAuth() {
     setUser(null);
     
     if (session) {
-      // NextAuth logout
+      
       await signOut({ callbackUrl: '/' });
     } else {
-      // JWT logout
+      
       removeToken();
       router.push('/');
     }

@@ -7,7 +7,6 @@ export async function GET(request) {
   try {
     await connectDB();
     
-    // Get all users and update their levels based on current points
     const users = await User.find({});
     let updatedCount = 0;
     

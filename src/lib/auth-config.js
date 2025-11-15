@@ -23,20 +23,20 @@ export const authOptions = {
         try {
           await connectDB()
           
-          // Check if user already exists in our custom User model
+          
           const existingUser = await User.findOne({ email: user.email })
           
           if (existingUser) {
-            // If user exists, update them to be a Google user
+            
             if (!existingUser.isGoogleUser) {
               await User.findByIdAndUpdate(existingUser._id, {
                 isGoogleUser: true,
                 profilePicture: user.image,
-                // Keep existing data but mark as Google user
+                
               })
             }
           } else {
-            // Create new user in our custom User model
+            
             const newUser = new User({
               name: user.name,
               email: user.email,
@@ -62,7 +62,7 @@ export const authOptions = {
         try {
           await connectDB()
           
-          // Get user from our custom User model
+          
           const dbUser = await User.findOne({ email: session.user.email })
           
           if (dbUser) {

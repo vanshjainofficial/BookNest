@@ -52,7 +52,7 @@ const notificationSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for efficient queries
+
 notificationSchema.index({ userId: 1, isRead: 1 });
 notificationSchema.index({ createdAt: -1 });
 notificationSchema.index({ type: 1 });

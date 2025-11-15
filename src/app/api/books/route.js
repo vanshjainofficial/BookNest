@@ -20,22 +20,17 @@ export async function GET(request) {
     const sortOrder = searchParams.get('sortOrder') || 'desc';
     const excludeOwner = searchParams.get('excludeOwner');
     const minRating = parseFloat(searchParams.get('minRating')) || 0;
-    const maxDistance = parseFloat(searchParams.get('maxDistance')) || 50; // km
+    const maxDistance = parseFloat(searchParams.get('maxDistance')) || 50; 
     const userLat = parseFloat(searchParams.get('userLat'));
-    const userLng = parseFloat(searchParams.get('userLng')); // Add this parameter
+    const userLng = parseFloat(searchParams.get('userLng')); 
 
-    // Build query - only show available books that are not in exchange
     let query = { 
-      status: 'available' // Only show books that are available for exchange
+      status: 'available' 
     };
-
-    // Exclude user's own books if excludeOwner parameter is provided
     if (excludeOwner) {
-      // Convert string ID to ObjectId for proper comparison
       query.ownerId = { $ne: excludeOwner };
     }
 
-    // Advanced search functionality
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
@@ -45,19 +40,15 @@ export async function GET(request) {
       ];
     }
 
-    // Filter by genre
     if (genre) {
       query.genre = genre;
     }
 
-    // Filter by condition
     if (condition) {
       query.condition = condition;
     }
 
-    // Filter by location (this would need to be enhanced with actual location data)
     if (location) {
-      // For now, we'll search in user location
       const usersInLocation = await User.find({ 
         location: { $regex: location, $options: 'i' } 
       }).select('_id');
@@ -65,7 +56,6 @@ export async function GET(request) {
       query.ownerId = { $in: usersInLocation.map(user => user._id) };
     }
 
-    // Filter by minimum rating
     if (minRating > 0) {
       const usersWithRating = await User.find({ 
         rating: { $gte: minRating } 
@@ -74,25 +64,18 @@ export async function GET(request) {
       query.ownerId = { $in: usersWithRating.map(user => user._id) };
     }
 
-    // Build sort object
     const sort = {};
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
-
-    // Calculate skip value for pagination
     const skip = (page - 1) * limit;
-
-    // Debug logging
     console.log('Books API Query:', JSON.stringify(query, null, 2));
     console.log('Exclude Owner:', excludeOwner);
 
-    // Execute query
     const books = await Book.find(query)
       .populate('ownerId', 'name location profilePicture rating')
       .sort(sort)
       .skip(skip)
       .limit(limit);
 
-    // Get total count for pagination
     const total = await Book.countDocuments(query);
     
     console.log('Found books:', books.length);
@@ -122,7 +105,6 @@ export async function POST(request) {
   try {
     await connectDB();
     
-    // Get JWT token from Authorization header
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -156,8 +138,6 @@ export async function POST(request) {
       pageCount,
       tags
     } = await request.json();
-
-    // Validation
     if (!title || !author || !genre || !condition || !coverImage || !description) {
       return NextResponse.json(
         { error: 'Title, author, genre, condition, cover image, and description are required' },
@@ -165,7 +145,6 @@ export async function POST(request) {
       );
     }
 
-    // Create new book
     const book = new Book({
       title,
       author,
@@ -182,16 +161,12 @@ export async function POST(request) {
     });
 
     await book.save();
-
-    // Add book to user's books array
     await User.findByIdAndUpdate(userId, {
       $push: { books: book._id }
     });
 
-    // Add points for adding a book (15 points)
     await addPointsForBook(userId);
 
-    // Populate owner data
     await book.populate('ownerId', 'name location profilePicture rating');
 
     return NextResponse.json({

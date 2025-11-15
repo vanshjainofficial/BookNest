@@ -21,13 +21,13 @@ export default function Home() {
   const checkAuth = async () => {
     try {
       if (session?.user) {
-        // NextAuth user
+        
         setUser(session.user);
         setLoading(false);
         return;
       }
       
-      // JWT user
+      
       const token = getToken();
       if (token && isAuthenticated()) {
         const response = await fetch('/api/auth/me', {
@@ -53,10 +53,10 @@ export default function Home() {
 
   const handleLogout = () => {
     if (session?.user) {
-      // NextAuth user - will be handled by Navbar component
+      
       setUser(null);
     } else {
-      // JWT user
+      
       removeToken();
       setUser(null);
       router.refresh();
@@ -81,8 +81,8 @@ export default function Home() {
             <div className="flex justify-between h-16">
               <div className="flex items-center">
                 <Link href="/" className="text-lg sm:text-xl lg:text-2xl font-bold text-indigo-600">
-                  <span className="hidden sm:inline">📚 Book Trading Club</span>
-                  <span className="sm:hidden">📚 BTC</span>
+                  <span className="hidden sm:inline">📚 BookNest</span>
+                  <span className="sm:hidden">📚 BookNest</span>
                 </Link>
               </div>
               <div className="flex items-center space-x-2 sm:space-x-4">
@@ -134,7 +134,7 @@ export default function Home() {
           ) : (
             <>
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
-                Trade Books, Share Stories
+                Share Books, Share Stories
               </h1>
               <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
                 Connect with fellow book lovers in your community. Exchange books, discover new reads, 
@@ -164,10 +164,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-              Why Choose Book Trading Club?
+              Why Choose BookNest?
             </h2>
             <p className="text-base sm:text-lg text-gray-600">
-              Everything you need to trade books with confidence
+              Everything you need to Exchange books with confidence
             </p>
           </div>
           
@@ -188,7 +188,7 @@ export default function Home() {
               </div>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Real-time Chat</h3>
               <p className="text-sm sm:text-base text-gray-600">
-                Communicate directly with book owners. Discuss details and arrange exchanges safely.
+                Communicate directly with book owners. Discuss details, location and arrange exchanges safely.
               </p>
             </div>
             
@@ -209,10 +209,10 @@ export default function Home() {
       <div className="bg-indigo-600 py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            Ready to Start Trading?
+            Ready to Start Exchange?
           </h2>
           <p className="text-base sm:text-lg lg:text-xl text-indigo-100 mb-6 sm:mb-8">
-            Join thousands of book lovers who are already trading and discovering new reads.
+            Join thousands of book lovers who are already Exchanging and discovering new reads.
           </p>
           <Link 
             href="/register" 
@@ -227,12 +227,12 @@ export default function Home() {
       <footer className="bg-gray-900 text-white py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h3 className="text-xl sm:text-2xl font-bold mb-4">📚 Book Trading Club</h3>
+            <h3 className="text-xl sm:text-2xl font-bold mb-4">📚 BookNest</h3>
             <p className="text-sm sm:text-base text-gray-400 mb-4">
               Connecting book lovers, one exchange at a time.
             </p>
             <p className="text-xs sm:text-sm text-gray-500">
-              © 2024 Book Trading Club. All rights reserved.
+              © 2025 BookNest. All rights reserved.
             </p>
           </div>
         </div>

@@ -112,7 +112,7 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Hash password before saving
+
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password') || this.isGoogleUser) return next();
   
@@ -125,12 +125,12 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-// Compare password method
+
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Calculate level based on points
+
 userSchema.methods.calculateLevel = function() {
   const points = this.points || 0;
   
@@ -141,7 +141,7 @@ userSchema.methods.calculateLevel = function() {
   return 'Bronze';
 };
 
-// Update level before saving
+
 userSchema.pre('save', function(next) {
   if (this.isModified('points')) {
     this.level = this.calculateLevel();
@@ -149,7 +149,7 @@ userSchema.pre('save', function(next) {
   next();
 });
 
-// Update level after any update operation
+
 userSchema.post(['findOneAndUpdate', 'updateOne', 'updateMany'], function(doc) {
   if (doc && doc.points !== undefined) {
     const newLevel = doc.calculateLevel();
@@ -160,7 +160,7 @@ userSchema.post(['findOneAndUpdate', 'updateOne', 'updateMany'], function(doc) {
   }
 });
 
-// Remove password from JSON output
+
 userSchema.methods.toJSON = function() {
   const user = this.toObject();
   delete user.password;

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 
-// Server-side file validation
+
 const validateImageFile = (file) => {
-  const maxSize = 32 * 1024 * 1024; // 32MB (ImgBB limit)
+  const maxSize = 32 * 1024 * 1024; 
   const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 
   if (!file) {
@@ -20,25 +20,25 @@ const validateImageFile = (file) => {
   return { valid: true };
 };
 
-// Server-side ImgBB upload
+
 const uploadToImgBB = async (file) => {
   try {
     const IMGBB_API_KEY = process.env.IMGBB_API_KEY || 'your-imgbb-api-key';
     
-    // Convert file to buffer
+    
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
-    // Convert to base64
+    
     const base64 = buffer.toString('base64');
     
-    // Create URL-encoded form data (as per ImgBB API docs)
+    
     const formData = new URLSearchParams();
     formData.append('image', base64);
     formData.append('key', IMGBB_API_KEY);
 
-    // Upload to ImgBB
-    const response = await fetch('https://api.imgbb.com/1/upload', {
+    
+    const response = await fetch('https:
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -83,13 +83,13 @@ export async function POST(request) {
       );
     }
 
-    // Validate file
+    
     const validation = validateImageFile(file);
     if (!validation.valid) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    // Upload to ImgBB
+    
     const result = await uploadToImgBB(file);
 
     if (result.success) {

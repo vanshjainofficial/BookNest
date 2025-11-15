@@ -8,13 +8,13 @@ export async function GET(request) {
   try {
     await connectDB();
     
-    // Try NextAuth session first
+    
     const session = await getServerSession(authOptions);
     
     if (session?.user) {
-      // Continue to fetch users for NextAuth users
+      
     } else {
-      // Fallback to JWT token
+      
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -35,7 +35,7 @@ export async function GET(request) {
       }
     }
 
-    // Get all users with their public data
+    
     const users = await User.find({})
       .select('name email profilePicture bio location rating books exchangesCompleted createdAt')
       .populate('books', 'title author coverImage genre')
@@ -43,13 +43,13 @@ export async function GET(request) {
 
     console.log('All Users API - Found users:', users.length);
 
-    // Calculate exchange counts for users who don't have it set
+    
     const Exchange = (await import('@/models/Exchange')).default;
     const usersWithExchangeCounts = await Promise.all(
       users.map(async (user) => {
         let exchangesCompleted = user.exchangesCompleted || 0;
         
-        // If exchangesCompleted is 0 or not set, calculate it from completed exchanges
+        
         if (exchangesCompleted === 0) {
           const completedExchanges = await Exchange.countDocuments({
             $or: [
@@ -58,7 +58,7 @@ export async function GET(request) {
             ]
           });
           
-          // Update user's exchangesCompleted count in database
+          
           if (completedExchanges > 0) {
             await User.findByIdAndUpdate(user._id, { 
               exchangesCompleted: completedExchanges 

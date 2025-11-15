@@ -28,7 +28,7 @@ export async function POST(request) {
 
     const { bookId } = await request.json();
 
-    // Get book details
+    
     const book = await Book.findById(bookId);
     if (!book) {
       return NextResponse.json(
@@ -37,10 +37,8 @@ export async function POST(request) {
       );
     }
 
-    // Get current owner details
     const currentOwner = await User.findById(book.ownerId);
     
-    // Check if book is in current owner's books array
     const isInOwnerBooks = currentOwner.books.includes(bookId);
 
     return NextResponse.json({

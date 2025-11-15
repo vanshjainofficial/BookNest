@@ -9,7 +9,6 @@ export async function GET(request) {
   try {
     await connectDB();
     
-    // Get JWT token from Authorization header
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -40,7 +39,6 @@ export async function GET(request) {
       );
     }
 
-    // Verify user is part of this exchange
     const exchange = await Exchange.findById(exchangeId);
     if (!exchange) {
       return NextResponse.json(
@@ -57,7 +55,6 @@ export async function GET(request) {
       );
     }
 
-    // Get messages for this exchange
     const messages = await Message.find({
       exchangeId,
       isDeleted: false
@@ -80,7 +77,6 @@ export async function POST(request) {
   try {
     await connectDB();
     
-    // Get JWT token from Authorization header
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -115,8 +111,6 @@ export async function POST(request) {
       );
     }
 
-    // For text messages, content is required
-    // For image messages, either content or imageUrl is required
     if (messageType === 'text' && !content) {
       return NextResponse.json(
         { error: 'Content is required for text messages' },
@@ -131,7 +125,6 @@ export async function POST(request) {
       );
     }
 
-    // Verify user is part of this exchange
     const exchange = await Exchange.findById(exchangeId);
     if (!exchange) {
       return NextResponse.json(
@@ -148,12 +141,10 @@ export async function POST(request) {
       );
     }
 
-    // Determine receiver ID
     const receiverId = exchange.requesterId.toString() === userId.toString() 
       ? exchange.ownerId 
       : exchange.requesterId;
 
-    // Create new message
     const message = new Message({
       senderId: userId,
       receiverId,
@@ -165,15 +156,11 @@ export async function POST(request) {
 
     await message.save();
 
-    // Add message to exchange
     await Exchange.findByIdAndUpdate(exchangeId, {
       $push: { messages: message._id }
     });
 
-    // Populate sender data
     await message.populate('senderId', 'name profilePicture');
-
-    // Send email notification for new message (only if not from the same user)
     try {
       const { sendEmail, getUserEmail } = await import('@/lib/email');
       const receiverEmail = await getUserEmail(receiverId);
@@ -188,7 +175,6 @@ export async function POST(request) {
         ]);
       }
     } catch (emailError) {
-      // Don't fail the message if email fails
     }
 
     return NextResponse.json({

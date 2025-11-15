@@ -17,13 +17,13 @@ export async function POST(request, { params }) {
 
     let raterId;
 
-    // Try NextAuth session first
+    
     const session = await getServerSession(authOptions);
     
     if (session?.user?.id) {
       raterId = session.user.id;
     } else {
-      // Fallback to JWT token
+      
       const authHeader = request.headers.get('authorization');
       
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -32,7 +32,7 @@ export async function POST(request, { params }) {
 
       const token = authHeader.split(' ')[1];
       
-      // Use the same JWT verification as auth.js
+      
       const decoded = verifyToken(token);
       if (!decoded) {
         return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
@@ -41,32 +41,32 @@ export async function POST(request, { params }) {
       raterId = decoded.userId;
     }
 
-    // Check if user is trying to rate themselves
+    
     if (raterId === id) {
       return NextResponse.json({ error: 'Cannot rate yourself' }, { status: 400 });
     }
 
-    // Validate rating
+    
     if (!rating || rating < 1 || rating > 5) {
       return NextResponse.json({ error: 'Rating must be between 1 and 5' }, { status: 400 });
     }
 
-    // Find the user being rated
+    
     const userToRate = await User.findById(id);
     if (!userToRate) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Check if user has already rated this person
+    
     const existingRating = userToRate.ratings.find(r => r.raterId.toString() === raterId);
     
     if (existingRating) {
-      // Update existing rating
+      
       existingRating.rating = rating;
       existingRating.review = review || '';
       existingRating.updatedAt = new Date();
     } else {
-      // Add new rating
+      
       userToRate.ratings.push({
         raterId,
         rating,
@@ -76,19 +76,19 @@ export async function POST(request, { params }) {
       });
     }
 
-    // Calculate new average rating
+    
     const totalRatings = userToRate.ratings.length;
     const sumRatings = userToRate.ratings.reduce((sum, r) => sum + r.rating, 0);
     userToRate.rating = totalRatings > 0 ? sumRatings / totalRatings : 0;
 
     await userToRate.save();
 
-    // Add points for rating (only for new ratings, not updates) - 5 points
+    
     if (!existingRating) {
       await addPointsForRating(raterId);
     }
 
-    // Add bonus points for 5-star ratings - 10 points
+    
     if (rating === 5) {
       await addPointsForFiveStarRating(id);
     }
@@ -114,13 +114,13 @@ export async function GET(request, { params }) {
 
     let userId;
 
-    // Try NextAuth session first
+    
     const session = await getServerSession(authOptions);
     
     if (session?.user?.id) {
       userId = session.user.id;
     } else {
-      // Fallback to JWT token
+      
       const authHeader = request.headers.get('authorization');
       
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -129,7 +129,7 @@ export async function GET(request, { params }) {
 
       const token = authHeader.split(' ')[1];
       
-      // Use the same JWT verification as auth.js
+      
       const decoded = verifyToken(token);
       if (!decoded) {
         return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
@@ -138,13 +138,13 @@ export async function GET(request, { params }) {
       userId = decoded.userId;
     }
 
-    // Find the user
+    
     const user = await User.findById(id).select('ratings rating');
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Check if current user has already rated this user
+    
     const userRating = user.ratings.find(r => r.raterId.toString() === userId);
 
     return NextResponse.json({ 

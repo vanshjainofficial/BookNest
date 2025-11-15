@@ -41,7 +41,7 @@ export function setAuthCookie(token) {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60 // 7 days
+    maxAge: 7 * 24 * 60 * 60 
   });
 }
 
@@ -50,7 +50,7 @@ export function removeAuthCookie() {
   cookieStore.delete('auth-token');
 }
 
-// Helper function to get current user from request headers (for API routes)
+
 export async function getCurrentUserFromRequest(request) {
   try {
     const authHeader = request.headers.get('authorization');

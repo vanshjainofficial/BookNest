@@ -1,18 +1,18 @@
-// ImgBB API integration for image uploads
+
 const IMGBB_API_KEY = process.env.IMGBB_API_KEY || 'your-imgbb-api-key';
 
 export const uploadToImgBB = async (file) => {
   try {
-    // Convert file to base64
+    
     const base64 = await fileToBase64(file);
     
-    // Create form data
+    
     const formData = new FormData();
     formData.append('image', base64);
     formData.append('key', IMGBB_API_KEY);
 
-    // Upload to ImgBB
-    const response = await fetch('https://api.imgbb.com/1/upload', {
+    
+    const response = await fetch('https:
       method: 'POST',
       body: formData
     });
@@ -42,10 +42,10 @@ export const uploadToImgBB = async (file) => {
   }
 };
 
-// Helper function to convert file to base64
+
 const fileToBase64 = (file) => {
   return new Promise((resolve, reject) => {
-    // Check if we're in browser environment
+    
     if (typeof window === 'undefined' || !window.FileReader) {
       reject(new Error('FileReader not available in this environment'));
       return;
@@ -54,7 +54,7 @@ const fileToBase64 = (file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      // Remove data:image/...;base64, prefix
+      
       const base64 = reader.result.split(',')[1];
       resolve(base64);
     };
@@ -62,9 +62,9 @@ const fileToBase64 = (file) => {
   });
 };
 
-// Validate image file
+
 export const validateImageFile = (file) => {
-  const maxSize = 32 * 1024 * 1024; // 32MB (ImgBB limit)
+  const maxSize = 32 * 1024 * 1024; 
   const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 
   if (!file) {

@@ -21,7 +21,6 @@ export async function GET(request, { params }) {
       );
     }
 
-    // Increment view count
     await Book.findByIdAndUpdate(id, { $inc: { views: 1 } });
 
     return NextResponse.json({ book });
@@ -39,13 +38,11 @@ export async function PUT(request, { params }) {
   try {
     await connectDB();
     
-    // Try NextAuth session first
     const session = await getServerSession(authOptions);
     
     let userId;
     
     if (session?.user) {
-      // Get user ID from database using email
       const user = await User.findOne({ email: session.user.email });
       if (!user) {
         return NextResponse.json(
@@ -55,7 +52,6 @@ export async function PUT(request, { params }) {
       }
       userId = user._id;
     } else {
-      // Fallback to JWT token
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -88,7 +84,6 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // Check if user owns the book
     if (book.ownerId.toString() !== userId) {
       return NextResponse.json(
         { error: 'You can only edit your own books' },
@@ -97,8 +92,6 @@ export async function PUT(request, { params }) {
     }
 
     const updateData = await request.json();
-
-    // Remove fields that shouldn't be updated directly
     delete updateData.ownerId;
     delete updateData._id;
     delete updateData.createdAt;
@@ -127,14 +120,12 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     await connectDB();
-    
-    // Try NextAuth session first
+
     const session = await getServerSession(authOptions);
     
     let userId;
     
     if (session?.user) {
-      // Get user ID from database using email
       const user = await User.findOne({ email: session.user.email });
       if (!user) {
         return NextResponse.json(
@@ -144,7 +135,6 @@ export async function DELETE(request, { params }) {
       }
       userId = user._id;
     } else {
-      // Fallback to JWT token
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -176,16 +166,12 @@ export async function DELETE(request, { params }) {
         { status: 404 }
       );
     }
-
-    // Check if user owns the book
     if (book.ownerId.toString() !== userId) {
       return NextResponse.json(
         { error: 'You can only delete your own books' },
         { status: 403 }
       );
     }
-
-    // Actually delete the book from database
     await Book.findByIdAndDelete(id);
 
     return NextResponse.json({

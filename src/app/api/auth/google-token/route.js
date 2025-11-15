@@ -9,7 +9,6 @@ export async function POST(request) {
   try {
     await connectDB();
 
-    // Get NextAuth session for Google users
     const session = await getServerSession(authOptions);
     
     if (!session?.user) {
@@ -19,7 +18,6 @@ export async function POST(request) {
       );
     }
 
-    // Get user from database
     const user = await User.findOne({ email: session.user.email });
     if (!user) {
       return NextResponse.json(
@@ -28,7 +26,6 @@ export async function POST(request) {
       );
     }
 
-    // Generate JWT token for Google user
     const token = generateToken({
       userId: user._id,
       email: user.email,

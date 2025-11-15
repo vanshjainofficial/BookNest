@@ -24,14 +24,14 @@ export default function ProfilePage() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    if (status === 'loading') return; // Wait for session to load
+    if (status === 'loading') return; 
     
     fetchUserProfile();
   }, [session, status]);
 
   const fetchUserProfile = async () => {
     try {
-      // For NextAuth users, no token needed
+      
       if (session?.user) {
         const response = await fetch('/api/auth/me');
         
@@ -52,7 +52,7 @@ export default function ProfilePage() {
         return;
       }
 
-      // For JWT users, use token
+      
       const token = localStorage.getItem('token');
       if (!token) {
         router.push('/login');
@@ -99,14 +99,14 @@ export default function ProfilePage() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
+    
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       toast.error('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
       return;
     }
 
-    // Validate file size (max 32MB for ImgBB)
+    
     if (file.size > 32 * 1024 * 1024) {
       toast.error('Image size should be less than 32MB');
       return;
@@ -150,7 +150,7 @@ export default function ProfilePage() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         response = await fetch('/api/auth/me', {
           method: 'PUT',
           headers: {
@@ -159,7 +159,7 @@ export default function ProfilePage() {
           body: JSON.stringify(formData)
         });
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         response = await fetch('/api/auth/me', {
           method: 'PUT',
@@ -182,7 +182,7 @@ export default function ProfilePage() {
           profilePicture: data.user.profilePicture || ''
         });
         toast.success('Profile updated successfully!');
-        // Refresh user data across the app
+        
         await refreshUser();
       } else {
         const errorData = await response.json();

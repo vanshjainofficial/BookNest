@@ -11,15 +11,12 @@ import { addPointsForExchange } from '@/lib/points-utils';
 export async function GET(request, { params }) {
   try {
     await connectDB();
-    
-    // Try NextAuth session first
     const session = await getServerSession(authOptions);
     
     let userId;
     
     if (session?.user) {
       console.log('NextAuth session found in GET /api/exchanges/[id]:', session.user.email);
-      // Get user ID from database using email
       const user = await User.findOne({ email: session.user.email });
       if (!user) {
         return NextResponse.json(
@@ -29,7 +26,6 @@ export async function GET(request, { params }) {
       }
       userId = user._id;
     } else {
-      // Fallback to JWT token
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -53,9 +49,6 @@ export async function GET(request, { params }) {
     }
 
     const { id } = await params;
-
-    // Fetching exchange details
-
     const exchange = await Exchange.findById(id)
       .populate('requesterId', 'name profilePicture rating location')
       .populate('ownerId', 'name profilePicture rating location')
@@ -68,8 +61,6 @@ export async function GET(request, { params }) {
         { status: 404 }
       );
     }
-
-    // Check if user is part of this exchange
     if (exchange.requesterId._id.toString() !== userId.toString() && 
         exchange.ownerId._id.toString() !== userId.toString()) {
       return NextResponse.json(
@@ -92,7 +83,6 @@ export async function PUT(request, { params }) {
   try {
     await connectDB();
     
-    // Try NextAuth session first
     const session = await getServerSession(authOptions);
     
     let userId;
@@ -100,7 +90,6 @@ export async function PUT(request, { params }) {
     
     if (session?.user) {
       console.log('NextAuth session found in PUT /api/exchanges/[id]:', session.user.email);
-      // Get user ID from database using email
       const user = await User.findOne({ email: session.user.email });
       if (!user) {
         return NextResponse.json(
@@ -111,7 +100,6 @@ export async function PUT(request, { params }) {
       userId = user._id;
       currentUser = { name: user.name, email: user.email };
     } else {
-      // Fallback to JWT token
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -145,7 +133,6 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // Check if user is part of this exchange (either owner or requester)
     const isOwner = exchange.ownerId.toString() === userId.toString();
     const isRequester = exchange.requesterId.toString() === userId.toString();
     
@@ -156,7 +143,6 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // For certain actions, only the book owner can perform them
     const ownerOnlyActions = ['approve', 'reject', 'complete'];
     if (ownerOnlyActions.includes(action) && !isOwner) {
       return NextResponse.json(
@@ -165,10 +151,8 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // For rating, only the other party can rate
     if (action === 'rate') {
       if (isOwner) {
-        // Owner can only rate the requester
         if (exchange.requesterId.toString() !== userId) {
           return NextResponse.json(
             { error: 'You can only rate the person you exchanged with' },
@@ -176,7 +160,6 @@ export async function PUT(request, { params }) {
           );
         }
       } else if (isRequester) {
-        // Requester can only rate the owner
         if (exchange.ownerId.toString() !== userId) {
           return NextResponse.json(
             { error: 'You can only rate the person you exchanged with' },
@@ -201,7 +184,6 @@ export async function PUT(request, { params }) {
         updateData.exchangeDate = new Date();
         notificationMessage = 'Your exchange request has been approved';
         
-        // Send email notification
         try {
           const { sendEmail, getUserEmail } = await import('@/lib/email');
           const requesterEmail = await getUserEmail(exchange.requesterId);
@@ -229,7 +211,6 @@ export async function PUT(request, { params }) {
         updateData.status = 'rejected';
         notificationMessage = 'Your exchange request has been rejected';
         
-        // Send email notification
         try {
           const { sendEmail, getUserEmail } = await import('@/lib/email');
           const requesterEmail = await getUserEmail(exchange.requesterId);
@@ -246,7 +227,6 @@ export async function PUT(request, { params }) {
           console.error('Failed to send rejection email:', emailError);
         }
         
-        // Make book available again
         await Book.findByIdAndUpdate(exchange.bookId, { status: 'available' });
         break;
 
@@ -260,22 +240,18 @@ export async function PUT(request, { params }) {
         updateData.status = 'completed';
         updateData.completionDate = new Date();
         notificationMessage = 'Your exchange has been completed';
-        
-        // Transfer book ownership
+
         const book = await Book.findById(exchange.bookId);
         if (book) {
-          // Update book owner to the requester (new owner)
           await Book.findByIdAndUpdate(exchange.bookId, { 
             ownerId: exchange.requesterId,
-            status: 'available' // Make it available for new owner
+            status: 'available' 
           });
           
-          // Remove book from previous owner's books array (completely remove)
           await User.findByIdAndUpdate(exchange.ownerId, {
             $pull: { books: exchange.bookId }
           });
           
-          // Add book to new owner's books array
           await User.findByIdAndUpdate(exchange.requesterId, {
             $addToSet: { books: exchange.bookId }
           });
@@ -283,7 +259,6 @@ export async function PUT(request, { params }) {
           console.log(`Book ownership transferred: ${book.title} from ${exchange.ownerId} to ${exchange.requesterId}`);
         }
         
-        // Update user exchange counts
         await User.findByIdAndUpdate(exchange.requesterId, { 
           $inc: { 
             totalExchanges: 1,
@@ -297,11 +272,9 @@ export async function PUT(request, { params }) {
           } 
         });
 
-        // Add points for completing exchange (20 points each)
         await addPointsForExchange(exchange.requesterId);
         await addPointsForExchange(exchange.ownerId);
         
-        // Send email notifications for ownership transfer
         try {
           const { sendEmail, getUserEmail } = await import('@/lib/email');
           const requesterEmail = await getUserEmail(exchange.requesterId);
@@ -336,8 +309,6 @@ export async function PUT(request, { params }) {
         }
         updateData.status = 'canceled';
         notificationMessage = 'The exchange has been cancelled';
-        
-        // Make book available again if it was approved
         if (exchange.status === 'approved') {
           await Book.findByIdAndUpdate(exchange.bookId, { status: 'available' });
         }
@@ -354,7 +325,6 @@ export async function PUT(request, { params }) {
         updateData.review = review || '';
         updateData.ratedBy = userId;
         
-        // Update user rating
         const targetUserId = exchange.requesterId.toString() === userId 
           ? exchange.ownerId 
           : exchange.requesterId;
@@ -364,20 +334,16 @@ export async function PUT(request, { params }) {
           $inc: { totalRatings: 1, ratingSum: rating }
         });
         
-        // Calculate new average rating
         const user = await User.findById(targetUserId);
         const newRating = user.ratingSum / user.totalRatings;
         await User.findByIdAndUpdate(targetUserId, { rating: newRating });
-        
-        // Add points for rating (5 points for giving rating)
+
         await addPointsForRating(userId);
         
-        // Add bonus points for 5-star ratings (10 points for receiving 5-star rating)
         if (rating === 5) {
           await addPointsForFiveStarRating(targetUserId);
         }
         
-        // Send email notification for rating
         try {
           const { sendEmail, getUserEmail } = await import('@/lib/email');
           const ratedUserEmail = await getUserEmail(targetUserId);
@@ -406,7 +372,6 @@ export async function PUT(request, { params }) {
         );
     }
 
-    // Update exchange
     const updatedExchange = await Exchange.findByIdAndUpdate(
       id,
       updateData,
@@ -417,10 +382,8 @@ export async function PUT(request, { params }) {
       { path: 'bookId', select: 'title author coverImage' }
     ]);
 
-    // Create notifications for both users
     if (notificationMessage) {
       try {
-        // Notification for requester
         const requesterNotification = new Notification({
           userId: exchange.requesterId,
           type: action === 'approve' ? 'exchange_approved' : 
@@ -436,13 +399,10 @@ export async function PUT(request, { params }) {
         console.log('Main notification created successfully');
       } catch (notificationError) {
         console.error('Error creating main notification:', notificationError);
-        // Don't fail the entire operation if notification fails
       }
       
-      // For completed exchanges, also notify the previous owner about ownership transfer
       if (action === 'complete') {
         try {
-          // Get book details for notification
           const bookForNotification = await Book.findById(exchange.bookId);
           const requesterUser = await User.findById(exchange.requesterId);
           
@@ -459,7 +419,6 @@ export async function PUT(request, { params }) {
           console.log('Ownership transfer notification created successfully');
         } catch (notificationError) {
           console.error('Error creating ownership transfer notification:', notificationError);
-          // Don't fail the entire operation if notification fails
         }
       }
     }

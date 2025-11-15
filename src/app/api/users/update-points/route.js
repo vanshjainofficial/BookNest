@@ -9,13 +9,13 @@ export async function POST(request) {
   try {
     await connectDB();
     
-    // Try NextAuth session first
+    
     const session = await getServerSession(authOptions);
     
     let userId;
     
     if (session?.user) {
-      // Get user ID from database using email
+      
       const user = await User.findOne({ email: session.user.email });
       if (!user) {
         return NextResponse.json(
@@ -25,7 +25,7 @@ export async function POST(request) {
       }
       userId = user._id;
     } else {
-      // Fallback to JWT token
+      
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -48,7 +48,7 @@ export async function POST(request) {
       userId = currentUser.userId;
     }
 
-    // Get all users and update their levels based on current points
+    
     const users = await User.find({});
     
     for (const user of users) {

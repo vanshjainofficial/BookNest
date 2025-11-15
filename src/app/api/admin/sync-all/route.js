@@ -8,7 +8,6 @@ export async function POST(request) {
   try {
     await connectDB();
     
-    // Get all users and update their levels based on current points
     const users = await User.find({}).sort({ points: -1 });
     let updatedCount = 0;
     
@@ -23,7 +22,6 @@ export async function POST(request) {
         updatedCount++;
       }
       
-      // Create leaderboard position notification for top users
       const position = i + 1;
       if (position <= 10) {
         try {

@@ -1,7 +1,7 @@
 import User from '@/models/User';
 import { createLevelUpNotification, createPointsNotification } from './notifications';
 
-// Calculate level based on points
+
 export function calculateLevel(points) {
   if (points >= 1000) return 'Diamond';
   if (points >= 500) return 'Platinum';
@@ -10,7 +10,7 @@ export function calculateLevel(points) {
   return 'Bronze';
 }
 
-// Award points and update level
+
 export async function awardPoints(userId, pointsToAdd, reason = '') {
   try {
     const user = await User.findById(userId);
@@ -21,7 +21,7 @@ export async function awardPoints(userId, pointsToAdd, reason = '') {
     const newPoints = (user.points || 0) + pointsToAdd;
     const newLevel = calculateLevel(newPoints);
 
-    // Update points and level in one operation
+    
     const updatedUser = await User.findByIdAndUpdate(
       userId, 
       { 
@@ -33,14 +33,14 @@ export async function awardPoints(userId, pointsToAdd, reason = '') {
 
     console.log(`Awarded ${pointsToAdd} points to user ${userId} for: ${reason}. New total: ${newPoints}, New level: ${newLevel}`);
     
-    // Create notification for points earned
+    
     try {
       await createPointsNotification(userId, pointsToAdd, reason);
     } catch (error) {
       console.error('Error creating points notification:', error);
     }
     
-    // Check if level changed and create level up notification
+    
     if (user.level !== newLevel) {
       try {
         await createLevelUpNotification(userId, newLevel, newPoints);
@@ -56,7 +56,7 @@ export async function awardPoints(userId, pointsToAdd, reason = '') {
   }
 }
 
-// Update user level based on current points
+
 export async function updateUserLevel(userId) {
   try {
     const user = await User.findById(userId);
@@ -80,7 +80,7 @@ export async function updateUserLevel(userId) {
   }
 }
 
-// Award points for different actions
+
 export const POINT_REWARDS = {
   ADD_BOOK: 15,
   COMPLETE_EXCHANGE: 20,

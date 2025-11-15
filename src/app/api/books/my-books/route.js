@@ -9,13 +9,10 @@ import { authOptions } from '@/lib/auth-config';
 export async function GET(request) {
   try {
     await connectDB();
-    
-    // Check NextAuth session first
     const session = await getServerSession(authOptions);
     let userId;
     
     if (session?.user) {
-      // For NextAuth users, get user from database
       const user = await User.findOne({ email: session.user.email });
       if (!user) {
         return NextResponse.json(
@@ -25,7 +22,6 @@ export async function GET(request) {
       }
       userId = user._id;
     } else {
-      // Fallback to JWT token
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -50,7 +46,7 @@ export async function GET(request) {
     
     const books = await Book.find({ 
       ownerId: userId,
-      status: 'available' // Only show available books (not in exchange)
+      status: 'available' 
     }).sort({ createdAt: -1 });
 
     console.log('Found my books:', books.length);

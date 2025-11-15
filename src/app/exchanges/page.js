@@ -37,11 +37,11 @@ export default function Exchanges() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         console.log('Fetching exchanges (NextAuth):', user?.id);
         response = await fetch(`/api/exchanges?${params}`);
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         console.log('Fetching exchanges with token:', token ? 'Found' : 'Not found');
         
@@ -83,7 +83,7 @@ export default function Exchanges() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         response = await fetch(`/api/exchanges/${exchangeId}`, {
           method: 'PUT',
           headers: {
@@ -92,7 +92,7 @@ export default function Exchanges() {
           body: JSON.stringify({ action })
         });
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         response = await fetch(`/api/exchanges/${exchangeId}`, {
           method: 'PUT',
@@ -105,7 +105,7 @@ export default function Exchanges() {
       }
 
       if (response.ok) {
-        fetchExchanges(); // Refresh the list
+        fetchExchanges(); 
         const actionMessages = {
           'approve': 'Exchange request approved successfully!',
           'reject': 'Exchange request rejected',
@@ -144,7 +144,7 @@ export default function Exchanges() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         response = await fetch(`/api/exchanges/${exchangeId}`, {
           method: 'PUT',
           headers: {
@@ -157,7 +157,7 @@ export default function Exchanges() {
           })
         });
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         response = await fetch(`/api/exchanges/${exchangeId}`, {
           method: 'PUT',
@@ -174,7 +174,7 @@ export default function Exchanges() {
       }
 
       if (response.ok) {
-        fetchExchanges(); // Refresh exchanges
+        fetchExchanges(); 
         toast.success('Rating submitted successfully!');
       } else {
         const errorData = await response.json();

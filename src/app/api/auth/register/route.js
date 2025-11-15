@@ -9,7 +9,6 @@ export async function POST(request) {
     
     const { name, email, password, location, bio } = await request.json();
 
-    // Validation
     if (!name || !email || !password || !location) {
       return NextResponse.json(
         { error: 'Name, email, password, and location are required' },
@@ -24,7 +23,6 @@ export async function POST(request) {
       );
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -33,7 +31,6 @@ export async function POST(request) {
       );
     }
 
-    // Create new user
     const user = new User({
       name,
       email,
@@ -44,14 +41,12 @@ export async function POST(request) {
 
     await user.save();
 
-    // Generate JWT token
     const token = generateToken({
       userId: user._id,
       email: user.email,
       name: user.name
     });
 
-    // Return response with token
     return NextResponse.json({
       message: 'User registered successfully',
       token: token,

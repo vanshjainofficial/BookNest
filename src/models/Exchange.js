@@ -80,7 +80,7 @@ const exchangeSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for efficient queries
+
 exchangeSchema.index({ requesterId: 1, status: 1 });
 exchangeSchema.index({ ownerId: 1, status: 1 });
 exchangeSchema.index({ bookId: 1 });

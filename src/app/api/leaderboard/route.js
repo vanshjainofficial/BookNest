@@ -9,7 +9,7 @@ export async function GET(request) {
     await connectDB();
     
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get('type') || 'points'; // points, exchanges, rating
+    const type = searchParams.get('type') || 'points'; 
     const limit = parseInt(searchParams.get('limit')) || 10;
 
     let sortCriteria = {};
@@ -34,7 +34,7 @@ export async function GET(request) {
       .sort(sortCriteria)
       .limit(limit);
 
-    // Add rank to each user
+    
     const usersWithRank = users.map((user, index) => ({
       ...user.toObject(),
       rank: index + 1

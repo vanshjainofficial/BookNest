@@ -62,7 +62,7 @@ export default function Register() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store token in localStorage
+        
         setToken(data.token);
         toast.success('Registration successful!');
         router.push('/');
@@ -89,7 +89,7 @@ export default function Register() {
       if (result?.error) {
         toast.error('Google sign-up failed. Please try again.');
       } else if (result?.ok) {
-        // After Google sign-up, get JWT token for the user
+        
         try {
           const tokenResponse = await fetch('/api/auth/google-token', {
             method: 'POST',

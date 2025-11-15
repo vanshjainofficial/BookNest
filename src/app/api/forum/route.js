@@ -16,7 +16,6 @@ export async function GET(request) {
     const sortBy = searchParams.get('sortBy') || 'lastActivity';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
-    // Build query
     let query = {};
 
     if (category) {
@@ -31,14 +30,12 @@ export async function GET(request) {
       ];
     }
 
-    // Build sort object
     const sort = {};
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
-    // Calculate skip value for pagination
     const skip = (page - 1) * limit;
 
-    // Execute query
+    
     const posts = await Forum.find(query)
       .populate('author', 'name profilePicture level points')
       .populate('replies')
@@ -46,7 +43,7 @@ export async function GET(request) {
       .skip(skip)
       .limit(limit);
 
-    // Get total count for pagination
+    
     const total = await Forum.countDocuments(query);
 
     return NextResponse.json({
@@ -102,7 +99,7 @@ export async function POST(request) {
       );
     }
 
-    // Create new forum post
+    
     const post = new Forum({
       title,
       content,
@@ -113,10 +110,10 @@ export async function POST(request) {
 
     await post.save();
 
-    // Award points for creating a post
+    
     await awardPoints(userId, POINT_REWARDS.CREATE_FORUM_POST, 'Creating a forum post');
 
-    // Populate author data
+    
     await post.populate('author', 'name profilePicture level points');
 
     return NextResponse.json({

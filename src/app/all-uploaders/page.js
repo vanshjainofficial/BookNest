@@ -17,14 +17,13 @@ export default function AllUploadersPage() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    if (status === 'loading') return; // Wait for session to load
+    if (status === 'loading') return; 
     
     fetchUsers();
     getCurrentUser();
   }, [session, status]);
 
   useEffect(() => {
-    // Filter users based on search term
     if (searchTerm.trim() === '') {
       setFilteredUsers(users);
     } else {
@@ -39,13 +38,11 @@ export default function AllUploadersPage() {
 
   const getCurrentUser = async () => {
     try {
-      // Check NextAuth session first
       if (session?.user) {
         setCurrentUser(session.user);
         return;
       }
 
-      // Fallback to JWT token
       const token = localStorage.getItem('token');
       if (!token) {
         router.push('/login');
@@ -71,7 +68,6 @@ export default function AllUploadersPage() {
     try {
       setLoading(true);
       
-      // For NextAuth users, no token needed
       if (session?.user) {
         const response = await fetch('/api/users/all');
         
@@ -86,7 +82,6 @@ export default function AllUploadersPage() {
         return;
       }
 
-      // For JWT users, use token
       const token = localStorage.getItem('token');
       if (!token) {
         toast.error('Please login to view users');

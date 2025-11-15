@@ -32,7 +32,7 @@ const forumReplySchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for better performance
+
 forumReplySchema.index({ forumPost: 1, createdAt: 1 });
 forumReplySchema.index({ author: 1, createdAt: -1 });
 

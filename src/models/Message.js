@@ -52,7 +52,7 @@ const messageSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for efficient queries
+
 messageSchema.index({ senderId: 1, receiverId: 1 });
 messageSchema.index({ exchangeId: 1, createdAt: 1 });
 messageSchema.index({ isRead: 1 });

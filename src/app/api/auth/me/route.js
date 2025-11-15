@@ -38,7 +38,6 @@ export async function GET(request) {
       });
     }
 
-    // Fallback to JWT token (for regular email/password users)
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -97,7 +96,6 @@ export async function PUT(request) {
   try {
     await connectDB();
 
-    // Get JWT token from Authorization header
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -121,7 +119,6 @@ export async function PUT(request) {
     const body = await request.json();
     const { name, email, location, bio, profilePicture } = body;
 
-    // Check if email is already taken by another user
     if (email) {
       const existingUser = await User.findOne({ 
         email, 

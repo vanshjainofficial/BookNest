@@ -33,7 +33,7 @@ export default function UserProfilePage() {
 
   const getCurrentUser = async () => {
     try {
-      // If NextAuth session exists, use it
+      
       if (session?.user) {
         setCurrentUser({
           _id: session.user.id,
@@ -44,7 +44,7 @@ export default function UserProfilePage() {
         return;
       }
 
-      // Fallback to JWT token
+      
       const token = localStorage.getItem('token');
       if (!token) {
         router.push('/login');
@@ -70,7 +70,7 @@ export default function UserProfilePage() {
     try {
       setLoading(true);
       
-      // For NextAuth users, no token needed
+      
       if (session?.user) {
         const response = await fetch(`/api/users/${userId}`);
         
@@ -85,7 +85,7 @@ export default function UserProfilePage() {
         return;
       }
 
-      // For JWT users, use token
+      
       const token = localStorage.getItem('token');
       if (!token) {
         toast.error('Please login to view profile');
@@ -126,8 +126,8 @@ export default function UserProfilePage() {
       console.log('Profile - Session:', session);
       console.log('Profile - User ID:', userId);
       
-      // For NextAuth users, we don't need to fetch rating separately
-      // as the API will handle authentication automatically
+      
+      
       if (session?.user) {
         console.log('Profile - Using NextAuth session for rating fetch');
         const response = await fetch(`/api/users/${userId}/rate`);
@@ -145,7 +145,7 @@ export default function UserProfilePage() {
         return;
       }
 
-      // Fallback to JWT token
+      
       const token = localStorage.getItem('token');
       console.log('Profile - Using JWT token for rating fetch, token exists:', !!token);
       
@@ -188,7 +188,7 @@ export default function UserProfilePage() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users
+        
         console.log('Profile - Using NextAuth session for rating submit');
         response = await fetch(`/api/users/${userId}/rate`, {
           method: 'POST',
@@ -198,7 +198,7 @@ export default function UserProfilePage() {
           body: JSON.stringify({ rating, review })
         });
       } else {
-        // For JWT users
+        
         const token = localStorage.getItem('token');
         console.log('Profile - Using JWT token for rating submit, token exists:', !!token);
         response = await fetch(`/api/users/${userId}/rate`, {
@@ -218,7 +218,7 @@ export default function UserProfilePage() {
         toast.success('Rating submitted successfully!');
         setShowRatingModal(false);
         setUserRating({ rating, review });
-        // Refresh user profile to get updated rating
+        
         fetchUserProfile();
       } else {
         const error = await response.json();

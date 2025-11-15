@@ -9,13 +9,13 @@ export async function GET(request, { params }) {
   try {
     await connectDB();
     
-    // Try NextAuth session first
+    
     const session = await getServerSession(authOptions);
     
     if (session?.user) {
-      // Continue to fetch user profile for NextAuth users
+      
     } else {
-      // Fallback to JWT token
+      
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -38,11 +38,11 @@ export async function GET(request, { params }) {
 
     const userId = params.id;
 
-    // Get user with their public data
+    
     const user = await User.findById(userId)
       .select('name email profilePicture bio location rating exchangesCompleted createdAt');
 
-    // If exchangesCompleted is 0 or not set, calculate it from completed exchanges
+    
     if (!user.exchangesCompleted || user.exchangesCompleted === 0) {
       const Exchange = (await import('@/models/Exchange')).default;
       const completedExchanges = await Exchange.countDocuments({
@@ -52,7 +52,7 @@ export async function GET(request, { params }) {
         ]
       });
       
-      // Update user's exchangesCompleted count
+      
       await User.findByIdAndUpdate(userId, { 
         exchangesCompleted: completedExchanges 
       });
@@ -67,7 +67,7 @@ export async function GET(request, { params }) {
       );
     }
 
-    // Get user's books (only available books)
+    
     const books = await Book.find({ 
       ownerId: userId,
       status: 'available'

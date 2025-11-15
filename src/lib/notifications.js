@@ -1,6 +1,6 @@
 import Notification from '@/models/Notification';
 
-// Create notification for level up
+
 export async function createLevelUpNotification(userId, newLevel, points) {
   try {
     const notification = new Notification({
@@ -20,7 +20,7 @@ export async function createLevelUpNotification(userId, newLevel, points) {
   }
 }
 
-// Create notification for points earned
+
 export async function createPointsNotification(userId, points, reason) {
   try {
     const notification = new Notification({
@@ -40,7 +40,7 @@ export async function createPointsNotification(userId, points, reason) {
   }
 }
 
-// Create notification for leaderboard position
+
 export async function createLeaderboardNotification(userId, position, totalUsers) {
   try {
     let message = '';

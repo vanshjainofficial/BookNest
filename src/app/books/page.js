@@ -50,12 +50,12 @@ export default function Books() {
         ...filters
       });
 
-      // Add excludeOwner parameter to exclude user's own books
+      
       if (session?.user) {
-        // For NextAuth users, exclude their own books
+        
         params.append('excludeOwner', session.user.id);
       } else if (token) {
-        // For JWT users, get user info and exclude their own books
+        
         try {
           const response = await fetch('/api/auth/me', {
             headers: {
@@ -99,7 +99,7 @@ export default function Books() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         console.log('Requesting book (NextAuth):', bookId);
         response = await fetch('/api/exchanges', {
           method: 'POST',
@@ -112,7 +112,7 @@ export default function Books() {
           }),
         });
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         if (!token) {
           toast.error('Please login to request a book');

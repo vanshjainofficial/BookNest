@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-// Create transporter (using Gmail as example)
+
 const createTransporter = () => {
   return nodemailer.createTransport({
     service: 'gmail',
@@ -11,7 +11,7 @@ const createTransporter = () => {
   });
 };
 
-// Email templates
+
 const emailTemplates = {
   exchangeRequest: (requesterName, bookTitle, ownerName) => ({
     subject: `New Book Exchange Request - ${bookTitle}`,
@@ -155,12 +155,12 @@ const emailTemplates = {
   })
 };
 
-// Send email function
+
 export const sendEmail = async (to, templateName, data) => {
   try {
-    // Skip email sending in development if no email config
+    
     if (process.env.NODE_ENV === 'development' && !process.env.EMAIL_USER) {
-      // Email would be sent in production
+      
       return { success: true, message: 'Email skipped in development' };
     }
 
@@ -181,7 +181,7 @@ export const sendEmail = async (to, templateName, data) => {
     };
 
     const result = await transporter.sendMail(mailOptions);
-    // Email sent successfully
+    
     return { success: true, messageId: result.messageId };
   } catch (error) {
     console.error('📧 Email sending failed:', error);
@@ -189,7 +189,7 @@ export const sendEmail = async (to, templateName, data) => {
   }
 };
 
-// Helper function to get user email
+
 export const getUserEmail = async (userId) => {
   try {
     const User = (await import('@/models/User')).default;

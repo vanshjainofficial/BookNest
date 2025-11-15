@@ -80,7 +80,7 @@ const bookSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for search functionality
+
 bookSchema.index({ title: 'text', author: 'text', description: 'text' });
 bookSchema.index({ genre: 1 });
 bookSchema.index({ status: 1 });

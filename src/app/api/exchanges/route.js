@@ -10,7 +10,6 @@ export async function GET(request) {
   try {
     await connectDB();
     
-    // Get JWT token from Authorization header
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -32,7 +31,7 @@ export async function GET(request) {
     const userId = currentUser.userId;
 
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get('type') || 'all'; // all, sent, received
+    const type = searchParams.get('type') || 'all'; 
     const status = searchParams.get('status') || 'all';
 
 
@@ -74,7 +73,6 @@ export async function POST(request) {
   try {
     await connectDB();
     
-    // Get JWT token from Authorization header
       const authHeader = request.headers.get('authorization');
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return NextResponse.json(
@@ -112,7 +110,6 @@ export async function POST(request) {
       );
     }
 
-    // Check if book exists and is available
     const book = await Book.findById(bookId);
     if (!book) {
       return NextResponse.json(
@@ -134,8 +131,6 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-
-    // Check if there's already a pending exchange for this book by this user
     const existingExchange = await Exchange.findOne({
       bookId,
       requesterId: userId,
@@ -148,8 +143,6 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-
-    // Create new exchange request
     const exchange = new Exchange({
       requesterId: userId,
       ownerId: book.ownerId,
@@ -159,7 +152,6 @@ export async function POST(request) {
 
     await exchange.save();
 
-    // Send email notification to book owner
     try {
       const { sendEmail, getUserEmail } = await import('@/lib/email');
       const ownerEmail = await getUserEmail(book.ownerId);
@@ -174,13 +166,10 @@ export async function POST(request) {
       }
     } catch (emailError) {
       console.error('Failed to send email notification:', emailError);
-      // Don't fail the request if email fails
     }
 
-    // Update book status to exchanging
     await Book.findByIdAndUpdate(bookId, { status: 'exchanging' });
 
-    // Create notification for book owner
     const notification = new Notification({
       userId: book.ownerId,
       type: 'exchange_request',
@@ -192,7 +181,6 @@ export async function POST(request) {
 
     await notification.save();
 
-    // Populate the exchange data
     await exchange.populate([
       { path: 'requesterId', select: 'name profilePicture rating' },
       { path: 'ownerId', select: 'name profilePicture rating' },

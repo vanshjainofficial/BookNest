@@ -9,13 +9,13 @@ export async function GET(request) {
   try {
     await connectDB();
     
-    // Try NextAuth session first
+    
     const session = await getServerSession(authOptions);
     
     let userId;
     
     if (session?.user?.email) {
-      // Get user ID from database using email
+      
       const user = await User.findOne({ email: session.user.email });
       if (!user) {
         return NextResponse.json(
@@ -25,7 +25,7 @@ export async function GET(request) {
       }
       userId = user._id;
     } else {
-      // Fallback to JWT token
+      
       const authHeader = request.headers.get('authorization');
       
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -49,7 +49,7 @@ export async function GET(request) {
       userId = currentUser.userId;
     }
 
-    // Get user's notifications
+    
     const notifications = await Notification.find({ userId })
       .sort({ createdAt: -1 })
       .limit(20);
@@ -71,13 +71,13 @@ export async function PUT(request) {
   try {
     await connectDB();
     
-    // Try NextAuth session first
+    
     const session = await getServerSession(authOptions);
     
     let userId;
     
     if (session?.user?.email) {
-      // Get user ID from database using email
+      
       const user = await User.findOne({ email: session.user.email });
       if (!user) {
         return NextResponse.json(
@@ -87,7 +87,7 @@ export async function PUT(request) {
       }
       userId = user._id;
     } else {
-      // Fallback to JWT token
+      
       const authHeader = request.headers.get('authorization');
       
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -114,10 +114,10 @@ export async function PUT(request) {
     const { notificationId } = await request.json();
 
     if (notificationId) {
-      // Mark specific notification as read
+      
       await Notification.findByIdAndUpdate(notificationId, { isRead: true });
     } else {
-      // Mark all notifications as read
+      
       await Notification.updateMany({ userId }, { isRead: true });
     }
 

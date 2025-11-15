@@ -29,7 +29,7 @@ export default function ChatPage() {
   
   const messagesEndRef = useRef(null);
   
-  // Socket.IO integration (disabled for now, using API-based messaging)
+  
   const { 
     connected, 
     messages: socketMessages, 
@@ -44,7 +44,7 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Authentication check
+  
   useEffect(() => {
     if (status === 'loading' || authLoading) return;
     
@@ -55,7 +55,7 @@ export default function ChatPage() {
     }
   }, [session, user, status, authLoading, router]);
 
-  // Merge Socket.IO messages with existing messages
+  
   useEffect(() => {
     if (socketMessages.length > 0) {
       setMessages(prev => {
@@ -70,14 +70,14 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (exchangeId && (session?.user || user)) {
-      // Set current user ID
+      
       if (session?.user) {
         setCurrentUserId(user?.id);
       } else if (user) {
         setCurrentUserId(user.id);
       }
       
-      // Call fetch functions
+      
       fetchExchangeDetails();
       fetchMessages();
     }
@@ -92,10 +92,10 @@ export default function ChatPage() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         response = await fetch(`/api/exchanges/${exchangeId}`);
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         if (!token) {
           router.push('/login');
@@ -115,9 +115,9 @@ export default function ChatPage() {
         if (data.exchange) {
           setExchange(data.exchange);
           
-          // Determine the other user
+          
           if (currentUserId) {
-            // Convert to strings for comparison
+            
             const requesterIdStr = data.exchange.requesterId._id.toString();
             const ownerIdStr = data.exchange.ownerId._id.toString();
             const currentUserIdStr = currentUserId.toString();
@@ -157,10 +157,10 @@ export default function ChatPage() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         response = await fetch(`/api/chat?exchangeId=${exchangeId}`);
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         if (!token) {
           router.push('/login');
@@ -189,23 +189,23 @@ export default function ChatPage() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
+    
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       toast.error('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
       return;
     }
 
-    // Validate file size (max 32MB for ImgBB)
+    
     if (file.size > 32 * 1024 * 1024) {
       toast.error('Image size should be less than 32MB');
       return;
     }
 
-    // Set selected image and create preview
+    
     setSelectedImage(file);
     
-    // Create preview URL
+    
     const reader = new FileReader();
     reader.onload = (e) => {
       setImagePreview(e.target.result);
@@ -216,7 +216,7 @@ export default function ChatPage() {
   const removeImagePreview = () => {
     setSelectedImage(null);
     setImagePreview(null);
-    // Reset file input
+    
     const fileInput = document.getElementById('image-upload');
     if (fileInput) {
       fileInput.value = '';
@@ -240,10 +240,10 @@ export default function ChatPage() {
       if (response.ok) {
         const data = await response.json();
         
-        // Send image message
+        
         await sendImageMessage(data.url);
         
-        // Clear preview after successful send
+        
         setSelectedImage(null);
         setImagePreview(null);
         setNewMessage('');
@@ -266,7 +266,7 @@ export default function ChatPage() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         response = await fetch('/api/chat', {
           method: 'POST',
           headers: {
@@ -274,14 +274,14 @@ export default function ChatPage() {
           },
           body: JSON.stringify({
             exchangeId,
-            content: newMessage.trim() || '', // Include text message if any
+            content: newMessage.trim() || '', 
             receiverId: otherUser._id,
             messageType: 'image',
             imageUrl: imageUrl
           })
         });
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         
         response = await fetch('/api/chat', {
@@ -292,7 +292,7 @@ export default function ChatPage() {
           },
           body: JSON.stringify({
             exchangeId,
-            content: newMessage.trim() || '', // Include text message if any
+            content: newMessage.trim() || '', 
             receiverId: otherUser._id,
             messageType: 'image',
             imageUrl: imageUrl
@@ -303,10 +303,10 @@ export default function ChatPage() {
       if (response.ok) {
         const data = await response.json();
         
-        // Add message to UI immediately
+        
         setMessages(prev => [...prev, data.message]);
         
-        // Also refresh messages from server to ensure consistency
+        
         setTimeout(() => {
           fetchMessages();
         }, 500);
@@ -326,19 +326,19 @@ export default function ChatPage() {
     e.preventDefault();
     if ((!newMessage.trim() && !selectedImage) || sending || !otherUser) return;
 
-    // If there's an image selected, upload and send it
+    
     if (selectedImage) {
       await uploadAndSendImage();
       return;
     }
 
-    // Send text message
+    
     setSending(true);
     try {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
+        
         response = await fetch('/api/chat', {
           method: 'POST',
           headers: {
@@ -351,7 +351,7 @@ export default function ChatPage() {
           })
         });
       } else {
-        // For JWT users, use token
+        
         const token = localStorage.getItem('token');
         
         response = await fetch('/api/chat', {
@@ -371,12 +371,12 @@ export default function ChatPage() {
       if (response.ok) {
         const data = await response.json();
         
-        // Add message to UI immediately
+        
         setMessages(prev => [...prev, data.message]);
         
         setNewMessage('');
         
-        // Also refresh messages from server to ensure consistency
+        
         setTimeout(() => {
           fetchMessages();
         }, 500);
@@ -545,7 +545,7 @@ export default function ChatPage() {
                     </div>
                   </div>
                 );
-              }).filter(Boolean) // Remove null entries
+              }).filter(Boolean) 
             )}
             
             <div ref={messagesEndRef} />

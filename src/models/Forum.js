@@ -52,7 +52,7 @@ const forumSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for better search performance
+
 forumSchema.index({ title: 'text', content: 'text' });
 forumSchema.index({ category: 1, createdAt: -1 });
 forumSchema.index({ author: 1, createdAt: -1 });

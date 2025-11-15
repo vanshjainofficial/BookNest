@@ -40,7 +40,7 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store token in localStorage
+        
         setToken(data.token);
         toast.success('Login successful!');
         router.push('/');
@@ -67,7 +67,7 @@ export default function Login() {
       if (result?.error) {
         toast.error('Google sign-in failed. Please try again.');
       } else if (result?.ok) {
-        // After Google sign-in, get JWT token for the user
+        
         try {
           const tokenResponse = await fetch('/api/auth/google-token', {
             method: 'POST',

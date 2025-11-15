@@ -49,14 +49,13 @@ export default function AddBook() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
+
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       toast.error('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
       return;
     }
 
-    // Validate file size (max 32MB for ImgBB)
     if (file.size > 32 * 1024 * 1024) {
       toast.error('Image size should be less than 32MB');
       return;
@@ -101,7 +100,6 @@ export default function AddBook() {
       let response;
       
       if (session?.user) {
-        // For NextAuth users, no token needed
         console.log('Add book - NextAuth user:', session.user.email);
         response = await fetch('/api/books', {
           method: 'POST',
@@ -114,7 +112,6 @@ export default function AddBook() {
           })
         });
       } else {
-        // For JWT users, use token
         const token = localStorage.getItem('token');
         console.log('Add book token:', token ? 'Found' : 'Not found');
         
@@ -176,7 +173,7 @@ export default function AddBook() {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link href="/" className="text-2xl font-bold text-indigo-600">
-                📚 Book Trading Club
+                📚 BookNest
               </Link>
             </div>
             <div className="flex items-center space-x-4">
