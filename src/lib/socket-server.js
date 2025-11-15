@@ -8,7 +8,7 @@ export const initSocket = (server) => {
     cors: {
       origin: process.env.NODE_ENV === 'production' 
         ? process.env.NEXT_PUBLIC_APP_URL 
-        : 'http:
+        : 'http://localhost:3000',
       methods: ['GET', 'POST']
     }
   });

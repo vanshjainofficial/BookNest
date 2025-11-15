@@ -53,7 +53,7 @@ const response = await fetch('https://api.imgbb.com/1/upload', {
     }
 
     const data = await response.json();
-    
+
     if (data.success) {
       return {
         success: true,
