@@ -10,7 +10,9 @@ const createTransporter = () => {
     }
   });
 };
-
+const onChange = () => {
+  
+}
 
 const emailTemplates = {
   exchangeRequest: (requesterName, bookTitle, ownerName) => ({
@@ -30,7 +32,7 @@ const emailTemplates = {
         </a>
         <p style="margin-top: 30px; color: #6B7280; font-size: 14px;">
           Best regards,<br>
-          Book Trading Club Team
+          BookNest Club Team
         </p>
       </div>
     `
@@ -53,12 +55,11 @@ const emailTemplates = {
         </a>
         <p style="margin-top: 30px; color: #6B7280; font-size: 14px;">
           Happy reading!<br>
-          Book Trading Club Team
+          BookNest Club Team
         </p>
       </div>
     `
   }),
-
   exchangeRejected: (ownerName, bookTitle, requesterName) => ({
     subject: `Exchange Request Update - ${bookTitle}`,
     html: `
@@ -76,7 +77,7 @@ const emailTemplates = {
         </a>
         <p style="margin-top: 30px; color: #6B7280; font-size: 14px;">
           Keep exploring!<br>
-          Book Trading Club Team
+          BookNest Club Team
         </p>
       </div>
     `
@@ -98,7 +99,7 @@ const emailTemplates = {
         </a>
         <p style="margin-top: 30px; color: #6B7280; font-size: 14px;">
           Best regards,<br>
-          Book Trading Club Team
+          BookNest Club Team
         </p>
       </div>
     `
@@ -117,14 +118,14 @@ const emailTemplates = {
             ${'⭐'.repeat(rating)}${'☆'.repeat(5 - rating)}
           </div>
         </div>
-        <p>Thank you for being a great member of our book trading community!</p>
+        <p>Thank you for being a great member of our book tradi community!</p>
         <a href="${process.env.NEXT_PUBLIC_APP_URL}/profile" 
            style="background-color: #F59E0B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
           View Your Profile
         </a>
         <p style="margin-top: 30px; color: #6B7280; font-size: 14px;">
           Keep up the great work!<br>
-          Book Trading Club Team
+          BookNest Club Team
         </p>
       </div>
     `
@@ -147,8 +148,8 @@ const emailTemplates = {
           View My Books
         </a>
         <p style="margin-top: 30px; color: #6B7280; font-size: 14px;">
-          Thank you for using Book Trading Club!<br>
-          Book Trading Club Team
+          Thank you for using BookNest Club!<br>
+          BookNest Club Team
         </p>
       </div>
     `

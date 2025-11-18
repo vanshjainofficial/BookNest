@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Book Trading Club",
-  description: "Trade books with fellow readers in your community",
+  title: "BookNest - Exchange Books",
+  description: "Exchange books with fellow readers in your community",
 };
 
 export default function RootLayout({ children }) {

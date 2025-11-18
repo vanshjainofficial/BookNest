@@ -34,7 +34,7 @@ export default function Navbar() {
               </div>
               <div className="hidden xs:block">
                 <h1 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  <span className="hidden sm:inline">Book Trading Club</span>
+                  <span className="hidden sm:inline">BookNest</span>
                   <span className="sm:hidden">BTC</span>
                 </h1>
                 <p className="text-xs text-gray-500 -mt-1 hidden sm:block">Discover • Exchange • Connect</p>
@@ -228,7 +228,7 @@ export default function Navbar() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-900">Welcome, {currentUser.name}</p>
-                    <p className="text-xs text-gray-500">Book Trading Club</p>
+                    <p className="text-xs text-gray-500">BookNest</p>
                   </div>
                 </div>
                 <button
