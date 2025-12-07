@@ -99,21 +99,15 @@ Frontend → Backend (API) → Database
 ## 🛠️ 4. Tech Stack
 
 ### **Frontend**
-- React.js  
-- React Router  
-- Axios  
-- TailwindCSS  
-
-### **Backend**
-- Node.js  
-- Express.js  
-
+- next.js
+- React Router 
+- CSS
+  
 ### **Database**
 - MongoDB Atlas  
 
 ### **Authentication**
 - JWT  
-- bcrypt  
 
 ### **Hosting**
 - Frontend → Vercel / Netlify
