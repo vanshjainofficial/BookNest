@@ -116,35 +116,7 @@ Frontend → Backend (API) → Database
 - bcrypt  
 
 ### **Hosting**
-- Frontend → Vercel / Netlify  
-- Backend → Render / Railway  
+- Frontend → Vercel / Netlify
 - Database → MongoDB Atlas  
 
 ---
-
-## 🔗 5. API Overview
-
-| Endpoint | Method | Description | Access |
-|----------|--------|-------------|--------|
-| `/api/auth/signup` | POST | Register a new user | Public |
-| `/api/auth/login` | POST | Login & return JWT | Public |
-| `/api/books` | GET | Get all available books | Authenticated |
-| `/api/books/:id` | GET | Get book details by ID | Authenticated |
-| `/api/books` | POST | Add new book | Authenticated |
-| `/api/books/:id` | PUT | Edit existing book | Authenticated |
-| `/api/books/:id` | DELETE | Delete book | Authenticated |
-| `/api/exchange/request` | POST | Send exchange request | Authenticated |
-| `/api/exchange/:id/accept` | PUT | Accept/reject a request | Authenticated |
-| `/api/messages/:userId` | GET | Get chat messages | Authenticated |
-
----
-
-If you want, I can also add:
-
-✅ Installation steps  
-✅ Project folder structure  
-✅ Environment variable examples  
-✅ Screenshots section  
-✅ Contribution guide  
-
-Just tell me! 🚀
